@@ -4,21 +4,24 @@
 
 import { useState, useEffect } from 'react';
 
+const getLocalItems = () => {
+  var list = localStorage.getItem('tasks')
+  //console.log(list)
+  if(list){
+    return JSON.parse(list);
+  }
+  else
+  return [];
+}
 
  export default function Home() {
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [tasks, setTasks] = useState(getLocalItems());
   const [newTask, setNewTask] = useState('');
 
-  // useEffect(() => {
-  //   const savedTasks = localStorage.getItem('tasks');
-  //   if (savedTasks) {
-  //     setTasks(JSON.parse(savedTasks));
-  //   }
-  // }, []);
 
-  // useEffect(() => {
-  //   localStorage.setItem('tasks', JSON.stringify(tasks));
-  // }, [tasks]);
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   const handleAddTask = () => {
     if (newTask.trim() !== '') {

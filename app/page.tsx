@@ -4,29 +4,29 @@
 
 import { useState, useEffect } from 'react';
 
-const getLocalItems = () => {
-  var list = localStorage.getItem('tasks')
-  //console.log(list)
-  if(list){
-    return JSON.parse(list);
-  }
-  else
-  return [];
-}
 
  export default function Home() {
-  const [tasks, setTasks] = useState(getLocalItems());
+ 
+  
+const [tasks, setTasks] = useState<string[]>([]);
   const [newTask, setNewTask] = useState('');
 
-
   useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
 
+    const list = localStorage.getItem('tasks');
+    if (list) {
+      setTasks(JSON.parse(list));
+    }
+    
+  }, []);
+
+  
   const handleAddTask = () => {
     if (newTask.trim() !== '') {
       setTasks([...tasks, newTask]);
       setNewTask('');
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    
     }
   };
 
@@ -34,6 +34,8 @@ const getLocalItems = () => {
     const newTasks = [...tasks];
     newTasks.splice(index, 1);
     setTasks(newTasks);
+    localStorage.setItem('tasks', JSON.stringify(newTasks));
+    
   };
 
   const handleEditTask = (index: number) => {
@@ -42,7 +44,10 @@ const getLocalItems = () => {
       const newTasks = [...tasks];
       newTasks[index] = updatedTask;
       setTasks(newTasks);
+      localStorage.setItem('tasks', JSON.stringify(newTasks));
+    
     }
+   
   };
 
   return (

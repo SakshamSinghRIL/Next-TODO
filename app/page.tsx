@@ -1,32 +1,87 @@
-import Image from "next/image";
-import { Input } from "postcss";
+ 'use client'
+ import { GrEdit } from "react-icons/gr";
+ import { MdDeleteForever } from "react-icons/md";
 
-export default function Home() {
+import { useState, useEffect } from 'react';
+
+
+ export default function Home() {
+  const [tasks, setTasks] = useState<string[]>([]);
+  const [newTask, setNewTask] = useState('');
+
+  useEffect(() => {
+    const savedTasks = localStorage.getItem('tasks');
+    if (savedTasks) {
+      setTasks(JSON.parse(savedTasks));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
+
+  const handleAddTask = () => {
+    if (newTask.trim() !== '') {
+      setTasks([...tasks, newTask]);
+      setNewTask('');
+    }
+  };
+
+  const handleDeleteTask = (index: number) => {
+    const newTasks = [...tasks];
+    newTasks.splice(index, 1);
+    setTasks(newTasks);
+  };
+
+  const handleEditTask = (index: number) => {
+    const updatedTask = prompt('Edit task:', tasks[index]);
+    if (updatedTask !== null) {
+      const newTasks = [...tasks];
+      newTasks[index] = updatedTask;
+      setTasks(newTasks);
+    }
+  };
 
   return (
-    <main className="font-sans max-w-500 mx-auto px-4">
-{/*        ////////////another way//////////////////////////////////////////////
-
-     <div className="flex flex-row items-end gap-6 w-96 my-10 center">
-  <div className="relative w-full min-w-[200px]">
-    <textarea
-      className="peer h-full min-h-[100px] w-full resize-none rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-blue-gray-50"
-      placeholder=" "></textarea>
-    <label
-      className="before:content[' '] after:content[' '] pointer-events-none absolute left-0 -top-1.5 flex h-full w-full select-none text-[11px] font-normal leading-tight text-blue-gray-400 transition-all before:pointer-events-none before:mt-[6.5px] before:mr-1 before:box-border before:block before:h-1.5 before:w-2.5 before:rounded-tl-md before:border-t before:border-l before:border-blue-gray-200 before:transition-all after:pointer-events-none after:mt-[6.5px] after:ml-1 after:box-border after:block after:h-1.5 after:w-2.5 after:flex-grow after:rounded-tr-md after:border-t after:border-r after:border-blue-gray-200 after:transition-all peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[3.75] peer-placeholder-shown:text-blue-gray-500 peer-placeholder-shown:before:border-transparent peer-placeholder-shown:after:border-transparent peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:before:border-t-2 peer-focus:before:border-l-2 peer-focus:before:border-gray-900 peer-focus:after:border-t-2 peer-focus:after:border-r-2 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:before:border-transparent peer-disabled:after:border-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500">
-      Enter task
-    </label>
-  </div>
-  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Enter</button> 
-
- </div> */}
-
-<div className="text-center text-4xl font-bold mb-5 text-purple-600">Saksham's Todo List</div> 
-<div className="flex items-center mb-5">
-<input className="text-lg p-2 mr-2 flex-grow border border-gray-300 rounded" placeholder="Add item..."/> 
-<button className="text-lg px-4 py-2 bg-green-500 text-white rounded-lg cursor-pointer">ADD </button> 
-</div>
-
-</main>
+    <div className="max-w-md mx-auto mt-10">
+      <h1 className="text-center text-4xl font-bold mb-5 text-blue-600">To-Do List</h1>
+      <div className="mt-4 flex justify-center">
+        <input
+          type="text"
+          className="border border-gray-300 p-2"
+          placeholder="Enter a new task..."
+          value={newTask}
+          onChange={(e) => setNewTask(e.target.value)}
+          onKeyPress={(e) => {                 // we can also put values using enter key 
+            if (e.key === 'Enter') {
+              handleAddTask();
+            }
+          }}
+        />
+        <button
+          className="ml-2 bg-blue-600 text-white px-4 py-2 rounded"
+          onClick={handleAddTask}
+        >
+          Add Task
+        </button>
+      </div>
+      <div>
+        {tasks.map((task, index) => (
+          <div key={index} className="flex justify-between items-center p-4 border-b">
+            <div>{task}</div>
+            <div className="flex space-x-2">
+              <button className="" onClick={() => handleEditTask(index)}>
+              <GrEdit />
+              </button>
+              <button className="" onClick={() => handleDeleteTask(index)}>
+              <MdDeleteForever />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+     
+    </div>
   );
 }
+

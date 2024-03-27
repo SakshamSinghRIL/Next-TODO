@@ -9,16 +9,16 @@ import { useState, useEffect } from 'react';
   const [tasks, setTasks] = useState<string[]>([]);
   const [newTask, setNewTask] = useState('');
 
-  useEffect(() => {
-    const savedTasks = localStorage.getItem('tasks');
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedTasks = localStorage.getItem('tasks');
+  //   if (savedTasks) {
+  //     setTasks(JSON.parse(savedTasks));
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
+  // useEffect(() => {
+  //   localStorage.setItem('tasks', JSON.stringify(tasks));
+  // }, [tasks]);
 
   const handleAddTask = () => {
     if (newTask.trim() !== '') {
